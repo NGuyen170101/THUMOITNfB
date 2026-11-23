@@ -5,7 +5,7 @@
   ╚══════════════════════════════════════════════════════════╝
   1) Mọi thông tin / câu chữ / ảnh / nhạc: khối "CẤU HÌNH" ở đầu phần <script> (cuối file).
   2) Bật/tắt từng tính năng & hiệu ứng: khối EFFECTS ngay dưới CONFIG (true = bật, false = tắt).
-  3) Ảnh cần có cạnh file này: portrait.jpg (ảnh thẻ trên vé), bg.jpg (nền cửa sổ máy bay), photo1.jpg … photo4.jpg (tem kỷ niệm), og.jpg (ảnh xem trước link 1200×630).
+  3) Ảnh cần có cạnh file này: portrait.jpg (ảnh thẻ trên vé), bg.jpg (ảnh nền toàn trang dưới lớp phủ xanh blur), photo1.jpg … photo4.jpg (tem kỷ niệm), og.jpg (ảnh xem trước link 1200×630).
   4) Link mời riêng:   .../index_B.html?khach=Chị Lan
      Bảng tạo link:    .../index_B.html?admin=1
      Thử chế độ nhẹ:   ...?lite=1
@@ -30,12 +30,13 @@
 <style>
 :root{
   --sky:#102a66;
+  --sky-tint:rgba(16,42,102,.76);
   --deep:#0a1b45;
   --paper:#f6f0e0;
   --ink:#14213d;
   --red:#d6402f;
   --blue:#2f66d0;
-  --mut:#a3b4dc;
+  --mut:#b8c7ea;
   --disp:'Bricolage Grotesque','Be Vietnam Pro',system-ui,sans-serif;
   --body:'Be Vietnam Pro',system-ui,sans-serif;
   --hand:'Playpen Sans','Be Vietnam Pro',cursive;
@@ -45,7 +46,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 [hidden]{display:none!important}
 html{scroll-behavior:smooth;background:var(--sky)}
-body{font-family:var(--body);color:var(--paper);background:var(--sky);min-height:100svh;overflow-x:hidden;-webkit-tap-highlight-color:transparent;line-height:1.5}
+body{font-family:var(--body);color:var(--paper);background:transparent;min-height:100svh;overflow-x:hidden;-webkit-tap-highlight-color:transparent;line-height:1.5;position:relative}
 body.locked{overflow:hidden;height:100svh}
 body.locked main{visibility:hidden}
 button,input,textarea{font:inherit;color:inherit}
@@ -54,6 +55,26 @@ button{cursor:pointer;border:0;background:none}
 svg.ic{fill:currentColor;display:block}
 body::before,body::after{content:"";position:fixed;left:0;right:0;height:8px;background:var(--chev);z-index:300;pointer-events:none}
 body::before{top:0}body::after{bottom:0}
+
+/* ===== NỀN TOÀN TRANG: ẢNH bg.jpg + LỚP PHỦ XANH BLUR ===== */
+.page-bg{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-color:var(--sky);
+  background-image:url('bg.jpg');
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+}
+.page-bg::after{
+  content:"";position:absolute;inset:0;
+  background:var(--sky-tint);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.calm .page-bg::after{
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
 
 .wrap{width:min(100%,460px);margin:0 auto;padding:0 22px}
 .chap{padding:84px 0 76px;position:relative}
@@ -112,7 +133,7 @@ body::before{top:0}body::after{bottom:0}
 .no-ambient-plane .flyer,.calm .flyer{display:none}
 
 /* ===== VÉ ===== */
-.pass{position:relative;margin-top:6px;background:var(--sky);border-radius:20px}
+.pass{position:relative;margin-top:6px}
 .pass.deal{animation:deal .95s var(--ease) .35s both}
 @keyframes deal{from{transform:translateY(70px) rotate(-3deg);opacity:0}to{transform:none;opacity:1}}
 .pass-shadow{position:absolute;inset:18px 14px -12px;background:rgba(3,10,32,.6);filter:blur(20px);border-radius:26px;pointer-events:none}
@@ -171,35 +192,42 @@ body::before{top:0}body::after{bottom:0}
 .route p{color:var(--mut);font-size:15px;max-width:32ch}
 .glider{position:absolute;left:10px;top:0;width:20px;height:20px;color:var(--paper);will-change:transform;z-index:2;background:var(--sky);border-radius:50%;padding:1px}
 
-/* ===== CỬA SỔ MÁY BAY (Nền ảnh bg.jpg + khung chữ blur) ===== */
+/* ===== CỬA SỔ MÁY BAY (Bầu trời nguyên bản + chữ có quầng sáng mềm, không hộp thô) ===== */
 .porthole{
   position:relative;width:min(76vw,300px);aspect-ratio:3/4;margin:30px auto 0;border-radius:46%/36%;border:14px solid #e7e1d2;overflow:hidden;cursor:pointer;touch-action:manipulation;
   box-shadow:inset 0 0 0 5px #b8b2a1,0 0 0 5px #cdc7b6,0 22px 40px rgba(3,10,32,.55);
-  background:url('bg.jpg') center/cover no-repeat,linear-gradient(#4f97ff,#cfe6ff);
+  background:linear-gradient(180deg,#2f78e8 0%,#79b4ff 58%,#d6e9ff 100%);
 }
-.porthole::after{
-  content:"";position:absolute;inset:0;
-  background:rgba(10,27,69,.28);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
-  pointer-events:none;z-index:0;
-}
-.tod-dusk .porthole::after{background:rgba(58,47,116,.38)}
-.tod-night .porthole::after{background:rgba(5,13,44,.52)}
+.tod-dusk .porthole{background:linear-gradient(180deg,#483a87 0%,#9d5a8c 48%,#ff9d6c 100%)}
+.tod-night .porthole{background:linear-gradient(180deg,#050d2c 0%,#152963 58%,#2c4a9c 100%)}
 .porthole .cl{z-index:1}
-.porthole .cl.l1{top:44%}.porthole .cl.l2{top:60%}.porthole .cl.l3{top:74%}
-.l2 .cloud{animation-duration:22s;opacity:.75}.l3 .cloud{animation-duration:15s;opacity:.85}
+.porthole .cl.l1{top:46%}.porthole .cl.l2{top:62%}.porthole .cl.l3{top:75%}
+.l2 .cloud{animation-duration:22s;opacity:.85}.l3 .cloud{animation-duration:15s;opacity:.95}
 .sun{position:absolute;top:13%;right:15%;width:56px;height:56px;border-radius:50%;z-index:1;background:radial-gradient(#fff6c8,#ffd36b 58%,#ffd36b00 72%)}
 .tod-night .sun{width:36px;height:36px;background:radial-gradient(#fff,#dfe8ff 55%,#dfe8ff00 70%)}
+
+/* Quầng sáng khuếch tán mềm mại giúp chữ nổi rõ tự nhiên trên nền trời & mây */
 .win-text{
-  position:absolute;inset:0;display:grid;place-content:center;text-align:center;color:#fff;
-  padding:20px;z-index:2;pointer-events:none;
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;color:#fff;padding:24px;z-index:2;pointer-events:none;
+  background:radial-gradient(circle at 50% 48%,rgba(11,29,74,.44) 0%,rgba(11,29,74,.16) 46%,transparent 74%);
 }
-.win-text::before{
-  content:"";position:absolute;left:12%;right:12%;top:29%;bottom:29%;
-  background:rgba(8,20,54,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  border:1px solid rgba(255,255,255,.24);border-radius:24px;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:-1;
+.tod-dusk .win-text{
+  background:radial-gradient(circle at 50% 48%,rgba(34,20,66,.46) 0%,rgba(34,20,66,.16) 46%,transparent 74%);
 }
-.win-text small{font-size:14px;font-weight:700;letter-spacing:.02em;text-shadow:0 2px 8px rgba(0,0,0,.75)}
-.win-text b{font-family:var(--disp);font-weight:800;font-size:66px;line-height:1.02;margin:2px 0;text-shadow:0 3px 14px rgba(0,0,0,.75)}
+.tod-night .win-text{
+  background:radial-gradient(circle at 50% 48%,rgba(4,10,30,.52) 0%,transparent 72%);
+}
+.win-text small{
+  font-size:13.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  color:rgba(255,255,255,.96);
+  text-shadow:0 1px 2px rgba(8,20,52,.7),0 3px 12px rgba(8,20,52,.55);
+}
+.win-text b{
+  font-family:var(--disp);font-weight:800;font-size:74px;line-height:.96;
+  letter-spacing:-.03em;margin:4px 0 6px;color:#fff;
+  text-shadow:0 2px 4px rgba(8,20,52,.65),0 8px 24px rgba(8,20,52,.5);
+}
 .shade{position:absolute;inset:0;background:linear-gradient(#ebe5d6,#d6cfbc);transform:translateY(-100%);transition:transform .6s var(--ease);z-index:3;display:grid;place-items:end center;padding-bottom:22px;font-size:14px;color:#8a826c;font-weight:600}
 .porthole.shut .shade{transform:none}
 .win-hint{margin-top:14px;text-align:center;color:var(--mut);font-size:14px}
@@ -308,7 +336,7 @@ body::before{top:0}body::after{bottom:0}
 
 /* ===== HUD ===== */
 .hud{position:fixed;top:18px;right:12px;z-index:190;display:flex;gap:8px;align-items:center}
-.chip{background:rgba(10,27,69,.86);border:1px solid rgba(246,240,224,.28);color:var(--paper);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;line-height:1.2;white-space:nowrap}
+.chip{background:rgba(10,27,69,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(246,240,224,.28);color:var(--paper);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;line-height:1.2;white-space:nowrap}
 .chip b{font-family:var(--disp);font-weight:800;font-size:13.5px;margin-left:4px}
 button.chip{cursor:pointer}
 
@@ -348,6 +376,9 @@ button.chip{cursor:pointer}
 </style>
 </head>
 <body class="locked">
+
+<!-- Lớp nền toàn trang: bg.jpg + lớp phủ xanh dương blur -->
+<div id="pageBg" class="page-bg" aria-hidden="true"></div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-plane" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></symbol>
@@ -587,7 +618,7 @@ const CONFIG = {
 
   /* --- Hình ảnh --- */
   photo: 'portrait.jpg',
-  windowBg: 'bg.jpg',
+  bgImage: 'bg.jpg',                // Ảnh nền toàn trang nằm dưới lớp xanh dương blur
   photos: [
     { src: 'photo1.jpg', cap: 'Ngày đầu nhập trường' },
     { src: 'photo2.jpg', cap: 'Những người bạn' },
@@ -669,8 +700,14 @@ const hr = new Date().getHours();
 const tod = hr >= 5 && hr < 17 ? 'day' : hr >= 17 && hr < 19 ? 'dusk' : 'night';
 root.classList.add('tod-' + tod);
 if (EFFECTS.skyByHour) {
-  const SKY = { day: ['#16398a', '#0a1f55'], dusk: ['#3a2f74', '#1f1840'], night: ['#0d1f4f', '#060f2c'] }[tod];
-  root.style.setProperty('--sky', SKY[0]); root.style.setProperty('--deep', SKY[1]);
+  const SKY = {
+    day:   ['#16398a', 'rgba(22,57,138,.76)', '#0a1f55'],
+    dusk:  ['#3a2f74', 'rgba(58,47,116,.78)', '#1f1840'],
+    night: ['#0d1f4f', 'rgba(13,31,79,.82)',  '#060f2c']
+  }[tod];
+  root.style.setProperty('--sky', SKY[0]);
+  root.style.setProperty('--sky-tint', SKY[1]);
+  root.style.setProperty('--deep', SKY[2]);
   const tc = document.querySelector('meta[name=theme-color]'); if (tc) tc.content = SKY[0];
 }
 
@@ -679,7 +716,7 @@ $$('[data-k]').forEach(el => el.textContent = CONFIG[el.dataset.k]);
 $('mapBtn').href = CONFIG.mapUrl;
 $('telBtn').href = 'tel:' + CONFIG.phone;
 $('pPhoto').src = CONFIG.photo;
-if (CONFIG.windowBg) $('porthole').style.backgroundImage = `url('${CONFIG.windowBg}'), linear-gradient(#4f97ff,#cfe6ff)`;
+if (CONFIG.bgImage) $('pageBg').style.backgroundImage = `url('${CONFIG.bgImage}')`;
 const P = Object.fromEntries(new Intl.DateTimeFormat('vi-VN', {
   timeZone: 'Asia/Ho_Chi_Minh', weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric',
   hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
@@ -1143,7 +1180,7 @@ $('toTop').onclick = () => scrollTo({ top: 0, behavior: 'smooth' });
 
 /* ---------- Tải trước ảnh & nhạc lúc rảnh ---------- */
 function warmUp() {
-  [CONFIG.photo, CONFIG.windowBg, ...CONFIG.photos.map(p => p.src)].filter(Boolean).forEach(src => {
+  [CONFIG.photo, CONFIG.bgImage, ...CONFIG.photos.map(p => p.src)].filter(Boolean).forEach(src => {
     const im = new Image(); im.src = src; if (im.decode) im.decode().catch(() => {});
   });
   if (CONFIG.music && CONFIG.preloadMusic && musicOn && !audio.src) { audio.preload = 'auto'; audio.src = CONFIG.music; }
