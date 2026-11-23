@@ -26,7 +26,10 @@
 <meta property="og:image" content="og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playpen+Sans:wght@400;600&display=swap" rel="stylesheet">
+<!-- Font tải KHÔNG chặn hiển thị trang (media=print rồi đổi sang all khi tải xong); font chữ viết tay chỉ tải sau khi khách lên tàu -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap"></noscript>
 <style>
 :root{
   --sky:#102a66;
@@ -56,29 +59,20 @@ svg.ic{fill:currentColor;display:block}
 body::before,body::after{content:"";position:fixed;left:0;right:0;height:8px;background:var(--chev);z-index:300;pointer-events:none}
 body::before{top:0}body::after{bottom:0}
 
-/* ===== NỀN TOÀN TRANG: ẢNH bg.jpg + LỚP PHỦ XANH BLUR ===== */
-.page-bg{
-  position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background-color:var(--sky);
-  background-image:url('bg.jpg');
-  background-size:cover;
-  background-position:center;
-  background-repeat:no-repeat;
-}
-.page-bg::after{
-  content:"";position:absolute;inset:0;
-  background:var(--sky-tint);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-}
-.calm .page-bg::after{
-  backdrop-filter:blur(6px);
-  -webkit-backdrop-filter:blur(6px);
-}
+/* ===== NỀN TOÀN TRANG: ảnh bg.jpg thu nhỏ vào một canvas ~96px rồi phóng to = tự mờ mượt, gần như không tốn GPU
+   (thay cho backdrop-filter toàn màn hình rất nặng lúc tải). Chưa có ảnh thì nền xanh trơn. ===== */
+.page-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;background:var(--sky);overflow:hidden}
+.page-bg canvas{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity 1s ease}
+.bg-ready .page-bg canvas{opacity:1}
+.page-bg::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(8,20,52,.5),transparent 26%,transparent 66%,rgba(8,20,52,.58)),var(--sky-tint)}   /* tối nhẹ hai đầu cho có chiều sâu + lớp phủ xanh */
 
 .wrap{width:min(100%,460px);margin:0 auto;padding:0 22px}
 .chap{padding:84px 0 76px;position:relative}
+/* Các phần phía dưới chỉ được dựng khi sắp cuộn tới → trang tải nhẹ hơn hẳn */
+#win,#stamps,#checkin,#board-sec,#post,#passport{content-visibility:auto;contain-intrinsic-size:auto 780px}
 .h2{font-family:var(--disp);font-weight:800;font-size:clamp(30px,9.5vw,42px);line-height:1.04;letter-spacing:-.01em;margin-bottom:10px}
+.h2::after{content:"";display:block;width:58px;height:6px;margin-top:14px;background:var(--chev)}   /* vạch viền thư hàng không dưới mỗi tiêu đề */
 .sub{color:var(--mut);font-size:15px;max-width:36ch}
 
 /* ===== CON DẤU CAO SU ===== */
@@ -90,7 +84,7 @@ body::before{top:0}body::after{bottom:0}
 @keyframes thump{0%{transform:rotate(var(--sr,-12deg)) scale(2.5);opacity:0}55%{transform:rotate(var(--sr,-12deg)) scale(.93);opacity:.95}100%{transform:rotate(var(--sr,-12deg)) scale(1);opacity:.88}}
 
 /* ===== MÂY ===== */
-.cl{position:absolute;left:-20%;width:140%;will-change:transform;pointer-events:none}
+.cl{position:absolute;left:-20%;width:140%;pointer-events:none}
 .cloud{height:88px;opacity:.95;animation:drift 30s ease-in-out infinite alternate;
   background:radial-gradient(closest-side,#fff 0 70%,#fff0 71%) 10% 62%/90px 60px no-repeat,radial-gradient(closest-side,#fff 0 70%,#fff0 71%) 34% 40%/130px 80px no-repeat,
              radial-gradient(closest-side,#fff 0 70%,#fff0 71%) 60% 62%/110px 70px no-repeat,radial-gradient(closest-side,#fff 0 70%,#fff0 71%) 86% 48%/120px 74px no-repeat}
@@ -99,7 +93,8 @@ body::before{top:0}body::after{bottom:0}
 
 /* ===== CỔNG LÊN TÀU ===== */
 .gate{position:fixed;inset:0;z-index:200;background:var(--sky);display:flex;flex-direction:column;justify-content:space-between;
-  padding:64px 26px 54px;overflow:hidden;transition:transform .95s cubic-bezier(.7,0,.2,1)}
+  padding:64px 26px 54px;overflow:hidden;transition:transform .95s cubic-bezier(.7,0,.2,1),background-color .9s ease}
+.bg-ready .gate{background:transparent}
 .gate.leave{transform:translateY(-102%);pointer-events:none}
 .gate .cl.g1{top:18%;opacity:.12}.gate .cl.g2{top:58%;opacity:.09}
 .gate .g2 .cloud{animation-duration:42s}
@@ -107,7 +102,8 @@ body::before{top:0}body::after{bottom:0}
 .g-small{color:var(--mut);font-size:15px;font-weight:500;margin-bottom:14px}
 .g-title{font-family:var(--disp);font-weight:800;font-size:clamp(50px,16.5vw,82px);line-height:.92;letter-spacing:-.025em}
 .ln{display:block;overflow:hidden;padding:.16em 0 .07em;margin:-.16em 0 -.07em}
-.ln i{display:block;font-style:normal;animation:rise .95s var(--ease) both;animation-delay:calc(var(--n,0) * .13s + .15s)}
+.ln i{display:block;font-style:normal;animation:rise .95s var(--ease) both;animation-delay:calc(var(--n,0) * .13s + .15s);animation-play-state:paused}
+.fonts-ready .ln i{animation-play-state:running}
 @keyframes rise{from{transform:translateY(105%)}to{transform:none}}
 .g-year i{color:transparent;-webkit-text-stroke:2px var(--paper);font-size:1.28em;line-height:1.05;margin-top:6px}
 .g-for{margin-top:22px;font-size:17px;color:var(--mut);animation:fadein 1s ease .8s both}
@@ -201,6 +197,8 @@ body::before{top:0}body::after{bottom:0}
 .tod-dusk .porthole{background:linear-gradient(180deg,#483a87 0%,#9d5a8c 48%,#ff9d6c 100%)}
 .tod-night .porthole{background:linear-gradient(180deg,#050d2c 0%,#152963 58%,#2c4a9c 100%)}
 .porthole .cl{z-index:1}
+.porthole .cloud{animation-play-state:paused}
+.porthole.run .cloud{animation-play-state:running}   /* mây chỉ trôi khi cửa sổ đang trong màn hình */
 .porthole .cl.l1{top:46%}.porthole .cl.l2{top:62%}.porthole .cl.l3{top:75%}
 .l2 .cloud{animation-duration:22s;opacity:.85}.l3 .cloud{animation-duration:15s;opacity:.95}
 .sun{position:absolute;top:13%;right:15%;width:56px;height:56px;border-radius:50%;z-index:1;background:radial-gradient(#fff6c8,#ffd36b 58%,#ffd36b00 72%)}
@@ -234,10 +232,10 @@ body::before{top:0}body::after{bottom:0}
 .win-quote{margin:26px auto 0;text-align:center;font-family:var(--disp);font-weight:500;font-size:clamp(19px,5.4vw,23px);line-height:1.35;max-width:24ch}
 
 /* ===== TEM KỶ NIỆM ===== */
-.track{display:flex;gap:26px;overflow-x:auto;scroll-snap-type:x mandatory;margin-top:28px;padding:16px calc(50% - min(38vw,150px)) 24px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.track{background:var(--deep);border-block:1px solid rgba(246,240,224,.14);display:flex;gap:26px;overflow-x:auto;scroll-snap-type:x mandatory;margin-top:28px;padding:16px calc(50% - min(38vw,150px)) 24px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .track::-webkit-scrollbar{display:none}
 .stamp{position:relative;flex:0 0 min(76vw,300px);scroll-snap-align:center;background:var(--paper);color:var(--ink);padding:14px 14px 10px;margin:0;cursor:zoom-in;touch-action:manipulation}
-.stamp::before{content:"";position:absolute;inset:-5px;border:10px dotted var(--sky);pointer-events:none}
+.stamp::before{content:"";position:absolute;inset:-5px;border:10px dotted var(--deep);pointer-events:none}   /* chấm = lỗ răng cưa, cùng màu khay tem */
 .stamp .pic{aspect-ratio:4/5;background:linear-gradient(135deg,#cfc7b2,#aaa28d);overflow:hidden}
 .stamp img{width:100%;height:100%;object-fit:cover;display:block}
 .stamp figcaption{font-weight:600;font-size:14px;padding-top:9px;text-align:center}
@@ -336,7 +334,7 @@ body::before{top:0}body::after{bottom:0}
 
 /* ===== HUD ===== */
 .hud{position:fixed;top:18px;right:12px;z-index:190;display:flex;gap:8px;align-items:center}
-.chip{background:rgba(10,27,69,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(246,240,224,.28);color:var(--paper);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;line-height:1.2;white-space:nowrap}
+.chip{background:rgba(10,27,69,.92);border:1px solid rgba(246,240,224,.28);color:var(--paper);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;line-height:1.2;white-space:nowrap}
 .chip b{font-family:var(--disp);font-weight:800;font-size:13.5px;margin-left:4px}
 button.chip{cursor:pointer}
 
@@ -378,7 +376,7 @@ button.chip{cursor:pointer}
 <body class="locked">
 
 <!-- Lớp nền toàn trang: bg.jpg + lớp phủ xanh dương blur -->
-<div id="pageBg" class="page-bg" aria-hidden="true"></div>
+<div id="pageBg" class="page-bg" aria-hidden="true"><canvas id="bgCanvas" width="96" height="190"></canvas></div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-plane" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></symbol>
@@ -429,7 +427,7 @@ button.chip{cursor:pointer}
               <strong data-k="to"></strong>
             </div>
             <div class="p-who">
-              <div class="p-photo"><img id="pPhoto" alt="Ảnh tân cử nhân"></div>
+              <div class="p-photo"><img id="pPhoto" alt="Ảnh tân cử nhân" decoding="async"></div>
               <div>
                 <div class="lab">Hành khách</div>
                 <strong id="pGuest" class="p-guest"></strong>
@@ -618,7 +616,7 @@ const CONFIG = {
 
   /* --- Hình ảnh --- */
   photo: 'portrait.jpg',
-  bgImage: 'bg.jpg',                // Ảnh nền toàn trang nằm dưới lớp xanh dương blur
+  bgImage: 'bg.jpg',                // Ảnh nền toàn trang (tự làm mờ bằng canvas nhỏ, rất nhẹ). '' = nền xanh trơn
   photos: [
     { src: 'photo1.jpg', cap: 'Ngày đầu nhập trường' },
     { src: 'photo2.jpg', cap: 'Những người bạn' },
@@ -716,7 +714,6 @@ $$('[data-k]').forEach(el => el.textContent = CONFIG[el.dataset.k]);
 $('mapBtn').href = CONFIG.mapUrl;
 $('telBtn').href = 'tel:' + CONFIG.phone;
 $('pPhoto').src = CONFIG.photo;
-if (CONFIG.bgImage) $('pageBg').style.backgroundImage = `url('${CONFIG.bgImage}')`;
 const P = Object.fromEntries(new Intl.DateTimeFormat('vi-VN', {
   timeZone: 'Asia/Ho_Chi_Minh', weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric',
   hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
@@ -737,7 +734,8 @@ const showGuest = (name) => {
 };
 showGuest(guestName);
 addEventListener('load', () => showGuest(guestName));
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => showGuest(guestName));
+const fontsGo = () => root.classList.add('fonts-ready');
+if (document.fonts && document.fonts.ready) { document.fonts.ready.then(() => { showGuest(guestName); fontsGo(); }); setTimeout(fontsGo, 1400); } else fontsGo();
 
 /* ---------- Bảng tạo link (?admin=1) ---------- */
 if (params.get('admin') === '1') $('admin').hidden = false;
@@ -903,7 +901,7 @@ function boardNow() {
   setTimeout(() => { $('gate').hidden = true; }, 1100);
   setTimeout(() => { const s = $('tkStamp'); s.classList.add('hit'); sfx.thump(); buzz(30); collect('board'); }, 1500);
   setTimeout(() => { if (!store.get('opened', false)) { store.set('opened', true); send({ kind: 'open' }); } }, 3000);
-  initScrollFx();
+  initScrollFx(); loadHandFont(); stageWarm();
 }
 
 /* ---------- Vé: xé cuống, nghiêng 3D, lưu thành ảnh ---------- */
@@ -1021,7 +1019,8 @@ function onScroll() {
 function initScrollFx() {
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(es => { routeVisible = es[0].isIntersecting; if (routeVisible) updateGlide(); }, { rootMargin: '30% 0px' }).observe(route);
-    new IntersectionObserver(es => { winVisible = es[0].isIntersecting; if (winVisible && !calm) updateWindow(); }, { rootMargin: '20% 0px' }).observe(porthole);
+    new IntersectionObserver(es => { winVisible = es[0].isIntersecting; porthole.classList.toggle('run', winVisible); if (winVisible && !calm) updateWindow(); }, { rootMargin: '20% 0px' }).observe(porthole);
+    new IntersectionObserver(es => { boardVisible = es[0].isIntersecting; if (boardVisible) paintFlaps(Math.max(0, Math.floor((startAt - Date.now()) / 1000))); }, { rootMargin: '10% 0px' }).observe($('flaps'));
   }
   addEventListener('scroll', onScroll, { passive: true });
   updateGlide(); updateHud();
@@ -1107,6 +1106,8 @@ function setCell(c, ch) {
   setTimeout(() => { c.firstChild.textContent = ch; }, 170);
 }
 function setGroup(k, v) { const s = String(v).padStart(cells[k].length, '0').slice(-cells[k].length); cells[k].forEach((c, i) => setCell(c, s[i])); }
+let boardVisible = true;                               // bảng giờ chỉ vẽ lại khi đang nằm trong màn hình
+function paintFlaps(sec) { setGroup('d', Math.floor(sec / 86400)); setGroup('h', Math.floor(sec % 86400 / 3600)); setGroup('m', Math.floor(sec % 3600 / 60)); setGroup('s', sec % 60); }
 (function tick() {
   const diff = startAt - Date.now();
   if (diff <= 0) {
@@ -1116,8 +1117,8 @@ function setGroup(k, v) { const s = String(v).padStart(cells[k].length, '0').sli
   }
   if (!document.hidden) {
     const sec = Math.floor(diff / 1000), days = Math.floor(sec / 86400);
-    setGroup('d', days); setGroup('h', Math.floor(sec % 86400 / 3600)); setGroup('m', Math.floor(sec % 3600 / 60)); setGroup('s', sec % 60);
     $('winDays').textContent = days;
+    if (boardVisible) paintFlaps(sec);
   }
   setTimeout(tick, 1000 - Date.now() % 1000);
 })();
@@ -1178,14 +1179,48 @@ $('planeBtn').onclick = () => {
 };
 $('toTop').onclick = () => scrollTo({ top: 0, behavior: 'smooth' });
 
-/* ---------- Tải trước ảnh & nhạc lúc rảnh ---------- */
-function warmUp() {
-  [CONFIG.photo, CONFIG.bgImage, ...CONFIG.photos.map(p => p.src)].filter(Boolean).forEach(src => {
-    const im = new Image(); im.src = src; if (im.decode) im.decode().catch(() => {});
-  });
-  if (CONFIG.music && CONFIG.preloadMusic && musicOn && !audio.src) { audio.preload = 'auto'; audio.src = CONFIG.music; }
+/* ---------- Tải nhẹ, từng bước, đúng lúc (tránh giật khi vừa mở trang) ---------- */
+const idle = f => (window.requestIdleCallback || (g => setTimeout(g, 400)))(f, { timeout: 3000 });
+const loadImg = src => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = src; });
+
+/* Ảnh nền: thu nhỏ còn ~96px (giải mã thu nhỏ ngay khi tải nếu trình duyệt hỗ trợ) rồi vẽ vào canvas; CSS phóng to = mờ tự nhiên */
+async function buildBackdrop() {
+  if (!CONFIG.bgImage) return;
+  try {
+    const W = 96, H = Math.round(W * Math.max(1.2, Math.min(2.4, innerHeight / innerWidth)));
+    const cv = $('bgCanvas'); cv.width = W; cv.height = H;
+    let src;
+    try { const b = await (await fetch(CONFIG.bgImage)).blob(); src = await createImageBitmap(b, { resizeWidth: W * 2, resizeQuality: 'medium' }); }
+    catch { src = await loadImg(CONFIG.bgImage); }
+    const iw = src.width || src.naturalWidth, ih = src.height || src.naturalHeight, k = Math.max(W / iw, H / ih);
+    const g = cv.getContext('2d');
+    g.imageSmoothingQuality = 'high'; if ('filter' in g) g.filter = 'blur(1.2px)';       // blur nhẹ ngay trên canvas nhỏ (rẻ)
+    g.drawImage(src, (W - iw * k) / 2, (H - ih * k) / 2, iw * k, ih * k);
+    root.classList.add('bg-ready');
+  } catch {}                                                                          // lỗi / thiếu ảnh: giữ nền xanh trơn
 }
-addEventListener('load', () => (window.requestIdleCallback || (f => setTimeout(f, 800)))(warmUp, { timeout: 4000 }));
+/* Font chữ viết tay (bưu thiếp) chỉ tải sau khi khách lên tàu */
+let handLoaded = false;
+function loadHandFont() {
+  if (handLoaded) return; handLoaded = true;
+  const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@400;600&display=swap'; document.head.appendChild(l);
+}
+/* Lúc rảnh sau khi tải xong: nền mờ + ảnh thẻ trên vé; nhạc tải sau thêm vài giây */
+function warmUp() {
+  buildBackdrop();
+  const im = new Image(); im.src = CONFIG.photo; if (im.decode) im.decode().catch(() => {});
+  setTimeout(() => { if (CONFIG.music && CONFIG.preloadMusic && musicOn && !audio.src) { audio.preload = 'auto'; audio.src = CONFIG.music; } }, 2500);
+}
+/* Sau khi lên tàu: tải tiếp các ảnh tem, MỖI LẦN MỘT ẢNH, cách nhau lúc rảnh (không dồn một cục) */
+function stageWarm() {
+  const q = CONFIG.photos.map(p => p.src);
+  (function next() {
+    const s = q.shift(); if (!s) return;
+    const im = new Image(); im.src = s;
+    (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => setTimeout(() => idle(next), 300));
+  })();
+}
+addEventListener('load', () => idle(warmUp));
 </script>
 </body>
 </html>
