@@ -112,7 +112,7 @@ body::before{top:0}body::after{bottom:0}
 .no-ambient-plane .flyer,.calm .flyer{display:none}
 
 /* ===== VÉ ===== */
-.pass{position:relative;margin-top:6px}
+.pass{position:relative;margin-top:6px;background:var(--sky);border-radius:20px}
 .pass.deal{animation:deal .95s var(--ease) .35s both}
 @keyframes deal{from{transform:translateY(70px) rotate(-3deg);opacity:0}to{transform:none;opacity:1}}
 .pass-shadow{position:absolute;inset:18px 14px -12px;background:rgba(3,10,32,.6);filter:blur(20px);border-radius:26px;pointer-events:none}
@@ -127,11 +127,7 @@ body::before{top:0}body::after{bottom:0}
   background:linear-gradient(105deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg) translateX(-100%);animation:sheen 2.6s ease 1.6s 2}
 @keyframes sheen{to{transform:skewX(-18deg) translateX(520%)}}
 .no-ticket-sheen .pass-main::after,.calm .pass-main::after{display:none}
-/* Tem ánh kim (vòng tròn gradient trống ở giữa) */
-.foil{position:absolute;right:18px;top:26px;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;
-  background:conic-gradient(from calc(var(--ry,0deg) * 9 + 40deg),#ff7b7b,#ffd76b,#7bffb5,#6bb8ff,#c97bff,#ff7b7b)}
-.foil::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--paper)}
-.p-top{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;font-weight:600;color:#5b647d;padding-right:62px}
+.p-top{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;font-weight:600;color:#5b647d}
 .p-top b{color:var(--red);font-weight:700}
 .p-route{display:flex;align-items:center;gap:12px;margin:24px 0 4px}
 .p-route strong{font-family:var(--disp);font-weight:800;font-size:25px;line-height:1}
@@ -157,7 +153,7 @@ body::before{top:0}body::after{bottom:0}
 .pass-stub.torn{transform:translate(20px,80px) rotate(9deg);opacity:0;transition:transform .8s var(--ease),opacity .8s ease;pointer-events:none}
 .pass-stub.gone{display:none}
 .pass.is-torn .pass-main{border-radius:20px;-webkit-mask:none;mask:none}
-.pass.is-torn .tk-stamp{bottom:18px}
+.pass.is-torn .tk-stamp{right:12px;bottom:12px;font-size:16px}
 .tk-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
 .intro{font-family:var(--disp);font-weight:500;font-size:clamp(21px,6.2vw,26px);line-height:1.3;margin-top:30px;max-width:26ch}
 .scrollhint{margin-top:22px;color:var(--mut);font-size:14px}
@@ -395,7 +391,6 @@ button.chip{cursor:pointer}
         <div class="pass-shadow"></div>
         <div id="passBody" class="pass-body">
           <div class="pass-main">
-            <div class="foil" aria-hidden="true"></div>
             <div class="p-top"><span>Thẻ lên tàu</span><b data-k="flight"></b></div>
             <div class="p-route">
               <strong data-k="from"></strong>
@@ -570,7 +565,7 @@ const CONFIG = {
   graduate:  'Lê Trọng Nguyễn',
   firstName: 'Nguyễn',
   major:     'Luật Kinh Tế',
-  year:      2027,                  // Hiển thị ngoài màn hình đầu (không hiện trong tem tròn trên vé)
+  year:      2027,
 
   /* --- Chủ đề chuyến bay --- */
   flight: 'GRAD 2027',
@@ -592,7 +587,7 @@ const CONFIG = {
 
   /* --- Hình ảnh --- */
   photo: 'portrait.jpg',
-  windowBg: 'bg.jpg',               // Ảnh nền mục "Nhìn qua cửa sổ"
+  windowBg: 'bg.jpg',
   photos: [
     { src: 'photo1.jpg', cap: 'Ngày đầu nhập trường' },
     { src: 'photo2.jpg', cap: 'Những người bạn' },
