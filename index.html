@@ -6,7 +6,7 @@
   1) Mọi thông tin / câu chữ / ảnh / nhạc: khối "CẤU HÌNH" ở đầu phần <script> (cuối file).
   2) Bật/tắt từng tính năng & hiệu ứng: khối EFFECTS ngay dưới CONFIG (true = bật, false = tắt).
   3) Ảnh cần có cạnh file này: portrait.jpg (ảnh thẻ trên vé), bg.jpg (ảnh nền toàn trang dưới lớp phủ xanh blur), photo1.jpg … photo4.jpg (tem kỷ niệm), og.jpg (ảnh xem trước link 1200×630).
-  4) Link mời riêng:   .../index_B.html?khach=Chị Lan
+  4) Link mời riêng:   .../index_B.html?khach=Chị Lan&hang=Gia đình      (hang = hạng khách mời trên vé, bỏ trống = "Khách mời")
      Bảng tạo link:    .../index_B.html?admin=1
      Thử chế độ nhẹ:   ...?lite=1
   5) Đổi màu: các biến ở đầu phần <style> (:root). Trời đổi theo giờ khách xem (sáng / hoàng hôn / đêm).
@@ -152,20 +152,20 @@ body::before{top:0}body::after{bottom:0}
 .tk-brand b{display:block;font-family:var(--disp);font-weight:800;font-size:18px;line-height:1.1}
 .tk-brand small{display:block;font-size:11.5px;color:#7a8299;font-weight:500}
 .tk-flight{border:1.5px solid var(--red);color:var(--red);border-radius:999px;padding:3px 11px;font-weight:700;font-size:12.5px;white-space:nowrap}
-.tk-guest{margin-top:20px}
+.tk-guest{margin-top:16px;padding-top:14px;border-top:1.5px dashed #cfc5ac}
 .lab{font-size:11.5px;color:#7a8299;font-weight:500;line-height:1.25}
 .p-guest{display:block;font-family:var(--disp);font-weight:800;font-size:32px;line-height:1.12;white-space:nowrap;overflow:hidden;margin-top:2px}
-.tk-route{display:flex;align-items:center;gap:12px;margin-top:16px;padding-top:14px;border-top:1.5px dashed #cfc5ac}
+.tk-route{display:flex;align-items:center;gap:12px;margin-top:20px}
 .tk-route>div:not(.tk-line){flex:none}
 .tk-route strong{display:block;font-family:var(--disp);font-weight:800;font-size:22px;line-height:1.05;margin-top:2px}
 .tk-line{flex:1;position:relative;height:2px;margin-top:16px;background:repeating-linear-gradient(90deg,var(--ink) 0 5px,transparent 5px 10px)}
 .tk-line .ic{position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;padding:2px;background:var(--paper);color:var(--red);transform:rotate(90deg)}
 .tk-line em{position:absolute;left:0;right:0;top:12px;text-align:center;font-style:normal;font-size:11px;font-weight:600;color:#7a8299}
-.tk-grad{display:flex;gap:14px;align-items:center;margin-top:18px;padding:12px;background:#ede5cf;border-radius:14px}
-.p-photo{width:76px;aspect-ratio:3/4;flex:none;border-radius:9px;overflow:hidden;background:linear-gradient(135deg,#d9d2bf,#bdb59f);border:2px solid #fff;box-shadow:0 3px 8px rgba(20,33,61,.25)}
+.tk-grad{display:flex;gap:16px;align-items:center;margin-top:18px;padding:12px;background:#ede5cf;border-radius:14px}
+.p-photo{width:118px;aspect-ratio:3/4;flex:none;border-radius:9px;overflow:hidden;background:linear-gradient(135deg,#d9d2bf,#bdb59f);border:2px solid #fff;box-shadow:0 3px 8px rgba(20,33,61,.25)}
 .p-photo img{width:100%;height:100%;object-fit:cover;display:block}
 .tk-gtext{min-width:0;flex:1}
-.tk-gtext b{display:block;font-family:var(--disp);font-weight:800;font-size:20px;line-height:1.15;margin-top:3px}
+.tk-gtext b{display:block;font-family:var(--disp);font-weight:800;font-size:22px;line-height:1.15;margin-top:4px}
 .tk-gtext small{display:block;font-size:12px;font-weight:500;color:#5b647d;margin-top:3px}
 .tk-when{display:grid;grid-template-columns:1.25fr 1fr;margin-top:30px;border-top:1.5px solid #d8cfb8;border-bottom:1.5px solid #d8cfb8}
 .tk-when>div{padding:12px 0;position:relative}
@@ -444,12 +444,12 @@ button.chip{cursor:pointer}
               <div class="tk-brand"><span class="tk-logo"><svg class="ic" aria-hidden="true"><use href="#i-plane"/></svg></span><div><b>Thẻ lên tàu</b><small>Boarding pass</small></div></div>
               <span class="tk-flight" data-k="flight"></span>
             </div>
-            <div class="tk-guest"><div class="lab">Hành khách</div><strong id="pGuest" class="p-guest"></strong></div>
             <div class="tk-route">
               <div><span class="lab">Điểm đi</span><strong data-k="from"></strong></div>
               <div class="tk-line"><svg class="ic" aria-hidden="true"><use href="#i-plane"/></svg><em data-k="duration"></em></div>
               <div style="text-align:right"><span class="lab">Điểm đến</span><strong data-k="to"></strong></div>
             </div>
+            <div class="tk-guest"><div class="lab">Hành khách</div><strong id="pGuest" class="p-guest"></strong></div>
             <div class="tk-grad">
               <div class="p-photo"><img id="pPhoto" alt="Ảnh tân cử nhân" decoding="async"></div>
               <div class="tk-gtext">
@@ -467,7 +467,7 @@ button.chip{cursor:pointer}
             <dl class="p-grid">
               <div class="span3"><dt class="lab">Cổng ra</dt><dd data-k="venue"></dd></div>
               <div class="span2"><dt class="lab">Ghế</dt><dd id="pSeat">Chưa chọn</dd></div>
-              <div><dt class="lab">Hạng</dt><dd data-k="to"></dd></div>
+              <div><dt class="lab">Hạng</dt><dd id="pClass"></dd></div>
             </dl>
           </div>
           <div id="stub" class="pass-stub" role="button" tabindex="0" aria-label="Xé cuống vé">
@@ -606,8 +606,8 @@ button.chip{cursor:pointer}
 <!-- Bảng tạo link mời: thêm ?admin=1 vào link -->
 <div id="admin" class="admin" hidden>
   <div class="a-head"><span>Tạo vé mời riêng</span><button id="aX" type="button" aria-label="Đóng" class="linkbtn" style="color:var(--ink);min-height:0">Đóng</button></div>
-  <div class="a-row"><input id="aName" placeholder="Tên khách (VD: Chị Lan)"></div>
-  <textarea id="aBulk" placeholder="Mỗi dòng một khách: Tên"></textarea>
+  <div class="a-row"><input id="aName" placeholder="Tên khách (VD: Chị Lan)"><input id="aClass" placeholder="Hạng (VD: Gia đình)" style="max-width:150px"></div>
+  <textarea id="aBulk" placeholder="Mỗi dòng một khách: Tên | Hạng (Hạng bỏ trống = Khách mời)"></textarea>
   <div class="a-row"><button id="aCopy" class="btn solid" type="button">Copy link</button><button id="aToggle" class="btn" type="button">Tạo hàng loạt</button></div>
 </div>
 
@@ -640,6 +640,7 @@ const CONFIG = {
 
   /* --- Khách --- */
   defaultGuest: 'Bạn',
+  guestClass:   'Khách mời',        // Hạng ghi trên vé. Đổi riêng từng khách bằng ?hang=Gia đình (hoặc ô "Hạng" trong bảng ?admin=1)
 
   /* --- Hình ảnh --- */
   photo: 'portrait.jpg',
@@ -754,25 +755,25 @@ document.addEventListener('error', e => { if (e.target.tagName === 'IMG') e.targ
 
 /* ---------- Khách: ?khach=Tên ---------- */
 const clean = (v, n) => (v || '').trim().slice(0, n);
-const guestName = clean(params.get('khach'), 40);
-const showGuest = (name) => {
+const guestName = clean(params.get('khach'), 40), guestClass = clean(params.get('hang'), 20) || CONFIG.guestClass;
+const showGuest = (name, cls) => {
   const g = name || CONFIG.defaultGuest;
-  $('gGuest').textContent = g; $('pGuest').textContent = g;
+  $('gGuest').textContent = g; $('pGuest').textContent = g; $('pClass').textContent = cls || guestClass;
   fitText($('pGuest'), 32, 14);
   const hsh = [...g].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) % 10000, 7);       // mã vạch riêng theo tên khách
   $('tkCode').textContent = CONFIG.flight.replace(/\s+/g, '') + '-' + String(hsh).padStart(4, '0');
 };
-showGuest(guestName);
-addEventListener('load', () => showGuest(guestName));
+showGuest(guestName, guestClass);
+addEventListener('load', () => showGuest(guestName, guestClass));
 const fontsGo = () => root.classList.add('fonts-ready');
-if (document.fonts && document.fonts.ready) { document.fonts.ready.then(() => { showGuest(guestName); fontsGo(); }); setTimeout(fontsGo, 1400); } else fontsGo();
+if (document.fonts && document.fonts.ready) { document.fonts.ready.then(() => { showGuest(guestName, guestClass); fontsGo(); }); setTimeout(fontsGo, 1400); } else fontsGo();
 
 /* ---------- Bảng tạo link (?admin=1) ---------- */
 if (params.get('admin') === '1') $('admin').hidden = false;
 const baseUrl = location.origin + location.pathname;
-const linkFor = (n) => n ? `${baseUrl}?khach=${encodeURIComponent(n)}` : baseUrl;
-const livePreview = () => showGuest(clean($('aName').value, 40));
-$('aName').addEventListener('input', livePreview);
+const linkFor = (n, h) => n ? `${baseUrl}?khach=${encodeURIComponent(n)}${h ? '&hang=' + encodeURIComponent(h) : ''}` : baseUrl;
+const livePreview = () => showGuest(clean($('aName').value, 40), clean($('aClass').value, 20));
+$('aName').addEventListener('input', livePreview); $('aClass').addEventListener('input', livePreview);
 $('aToggle').onclick = () => {
   const bulk = $('admin').classList.toggle('bulk');
   $('aToggle').textContent = bulk ? 'Tạo từng link' : 'Tạo hàng loạt';
@@ -780,11 +781,11 @@ $('aToggle').onclick = () => {
 };
 $('aCopy').onclick = async () => {
   const text = $('admin').classList.contains('bulk')
-    ? $('aBulk').value.split('\n').map(s => s.trim()).filter(Boolean).map(n => `${n}: ${linkFor(n)}`).join('\n')
-    : linkFor(clean($('aName').value, 40));
+    ? $('aBulk').value.split('\n').map(s => s.trim()).filter(Boolean).map(l => { const [n, h] = l.split('|').map(x => x.trim()); return `${n}: ${linkFor(n, h)}`; }).join('\n')
+    : linkFor(clean($('aName').value, 40), clean($('aClass').value, 20));
   await copy(text); toast('Đã copy link');
 };
-$('aX').onclick = () => { $('admin').hidden = true; showGuest(guestName); };
+$('aX').onclick = () => { $('admin').hidden = true; showGuest(guestName, guestClass); };
 
 /* ---------- Gửi về Google Sheet ---------- */
 function send(data) {
@@ -963,14 +964,14 @@ if (EFFECTS.ticketTilt && !calm) {
 
 function rr(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
 async function drawTicket(withPhoto) {
-  const W = 1080, H = 1560, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const W = 1080, H = 1700, c = document.createElement('canvas'); c.width = W; c.height = H;
   const g = c.getContext('2d'), css = getComputedStyle(root), PAPER = '#f6f0e0', INK = '#14213d', RED = '#d6402f', GREY = '#7a8299';
   const SKYC = css.getPropertyValue('--sky').trim() || '#1a4fb4';
   const F = '"Bricolage Grotesque",system-ui,sans-serif', B = '"Be Vietnam Pro",system-ui,sans-serif';
   const PLANE = new Path2D('M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z');
   try { await Promise.all(['800 60px "Bricolage Grotesque"', '600 30px "Be Vietnam Pro"'].map(f => document.fonts.load(f))); } catch {}
   g.fillStyle = SKYC; g.fillRect(0, 0, W, H);
-  const x = 70, y = 110, w = 940, h = 1270, L = x + 56, R = x + w - 56;
+  const x = 70, y = 110, w = 940, h = 1440, L = x + 56, R = x + w - 56;
   const T = (s, tx, ty, font, col, al) => { g.font = font; g.fillStyle = col; g.textAlign = al || 'left'; g.fillText(s, tx, ty); };
   const fitFont = (s, wt, max, fam, maxW) => { let fs = max; g.font = `${wt} ${fs}px ${fam}`; while (g.measureText(s).width > maxW && fs > 24) { fs -= 2; g.font = `${wt} ${fs}px ${fam}`; } return fs; };
   const dash = (x0, y0, x1, y1, col, lw, d) => { g.setLineDash(d || [12, 10]); g.strokeStyle = col; g.lineWidth = lw; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke(); g.setLineDash([]); };
@@ -984,46 +985,48 @@ async function drawTicket(withPhoto) {
   T('Thẻ lên tàu', L + 100, y + 96, `800 46px ${F}`, INK); T('Boarding pass', L + 100, y + 132, `500 26px ${B}`, GREY);
   g.font = `700 28px ${B}`; const fw = g.measureText(CONFIG.flight).width + 48;
   g.strokeStyle = RED; g.lineWidth = 3; rr(g, R - fw, y + 70, fw, 54, 27); g.stroke(); T(CONFIG.flight, R - fw / 2, y + 107, `700 28px ${B}`, RED, 'center');
-  /* hành khách */
-  T('Hành khách', L, y + 212, `500 28px ${B}`, GREY);
-  const gn = $('pGuest').textContent, gfs = fitFont(gn, 800, 92, F, R - L); T(gn, L, y + 216 + gfs, `800 ${gfs}px ${F}`, INK);
-  /* chặng bay */
-  dash(L, y + 346, R, y + 346, '#cfc5ac', 3);
-  T('Điểm đi', L, y + 392, `500 24px ${B}`, GREY); T(CONFIG.from, L, y + 450, `800 58px ${F}`, INK);
-  T('Điểm đến', R, y + 392, `500 24px ${B}`, GREY, 'right'); T(CONFIG.to, R, y + 450, `800 58px ${F}`, INK, 'right');
+  /* điểm đi → điểm đến (đứng trước hành khách) */
+  T('Điểm đi', L, y + 196, `500 24px ${B}`, GREY); T(CONFIG.from, L, y + 254, `800 58px ${F}`, INK);
+  T('Điểm đến', R, y + 196, `500 24px ${B}`, GREY, 'right'); T(CONFIG.to, R, y + 254, `800 58px ${F}`, INK, 'right');
   g.font = `800 58px ${F}`; const fwid = g.measureText(CONFIG.from).width, twid = g.measureText(CONFIG.to).width;
-  const lx0 = L + fwid + 28, lx1 = R - twid - 28, ly = y + 430;
+  const lx0 = L + fwid + 28, lx1 = R - twid - 28, ly = y + 234;
   if (lx1 > lx0 + 90) { dash(lx0, ly, lx1, ly, INK, 4); plane((lx0 + lx1) / 2, ly, Math.PI / 2, 1.9, RED); T(CONFIG.duration, (lx0 + lx1) / 2, ly + 52, `600 24px ${B}`, GREY, 'center'); }
-  /* tân cử nhân */
-  const bx = x + 40, by = y + 496, bw = w - 80, bh = 256;
+  /* hành khách */
+  dash(L, y + 330, R, y + 330, '#cfc5ac', 3);
+  T('Hành khách', L, y + 376, `500 28px ${B}`, GREY);
+  const gn = $('pGuest').textContent, gfs = fitFont(gn, 800, 92, F, R - L); T(gn, L, y + 382 + gfs, `800 ${gfs}px ${F}`, INK);
+  /* tân cử nhân: ảnh lớn */
+  const bx = x + 40, by = y + 520, bw = w - 80, pw = 210, ph = 280, bh = ph + 56;
   g.fillStyle = '#ede5cf'; rr(g, bx, by, bw, bh, 30); g.fill();
-  const px = bx + 28, py = by + 28, pw = 150, ph = 200;
-  g.fillStyle = '#d9d2bf'; rr(g, px, py, pw, ph, 18); g.fill();
+  const px = bx + 28, py = by + 28;
+  g.fillStyle = '#d9d2bf'; rr(g, px, py, pw, ph, 20); g.fill();
   const im = $('pPhoto');
-  if (withPhoto && im.complete && im.naturalWidth) { g.save(); rr(g, px, py, pw, ph, 18); g.clip(); const k = Math.max(pw / im.naturalWidth, ph / im.naturalHeight); g.drawImage(im, px + (pw - im.naturalWidth * k) / 2, py + (ph - im.naturalHeight * k) / 2, im.naturalWidth * k, im.naturalHeight * k); g.restore(); }
-  const tx = px + pw + 32, tw = bx + bw - 28 - tx;
-  T('Được mời đến dự lễ tốt nghiệp', tx, py + 34, `500 26px ${B}`, GREY); T('của Tân cử nhân', tx, py + 66, `500 26px ${B}`, GREY);
-  const nfs = fitFont(CONFIG.graduate, 800, 50, F, tw); T(CONFIG.graduate, tx, py + 80 + nfs, `800 ${nfs}px ${F}`, INK);
-  const mfs = fitFont(CONFIG.major, 500, 30, B, tw); T(CONFIG.major, tx, py + 94 + nfs + mfs, `500 ${mfs}px ${B}`, '#5b647d');
+  if (withPhoto && im.complete && im.naturalWidth) { g.save(); rr(g, px, py, pw, ph, 20); g.clip(); const k = Math.max(pw / im.naturalWidth, ph / im.naturalHeight); g.drawImage(im, px + (pw - im.naturalWidth * k) / 2, py + (ph - im.naturalHeight * k) / 2, im.naturalWidth * k, im.naturalHeight * k); g.restore(); }
+  g.strokeStyle = '#fff'; g.lineWidth = 6; rr(g, px, py, pw, ph, 20); g.stroke();
+  const tx = px + pw + 34, tw = bx + bw - 28 - tx, ty0 = py + 46;
+  T('Được mời đến dự lễ tốt nghiệp', tx, ty0, `500 26px ${B}`, GREY); T('của Tân cử nhân', tx, ty0 + 34, `500 26px ${B}`, GREY);
+  const nfs = fitFont(CONFIG.graduate, 800, 54, F, tw); T(CONFIG.graduate, tx, ty0 + 52 + nfs, `800 ${nfs}px ${F}`, INK);
+  const mfs = fitFont(CONFIG.major, 500, 30, B, tw); T(CONFIG.major, tx, ty0 + 70 + nfs + mfs, `500 ${mfs}px ${B}`, '#5b647d');
   /* ngày + giờ */
-  const wy = y + 800;
+  const wy = y + 910;
   dash(L, wy, R, wy, '#d8cfb8', 3, []); dash(L, wy + 176, R, wy + 176, '#d8cfb8', 3, []);
   T('Ngày', L, wy + 44, `500 26px ${B}`, GREY);
   g.font = `800 118px ${F}`; const dw = g.measureText(P.day).width; T(P.day, L, wy + 150, `800 118px ${F}`, RED);
   T(`Tháng ${P.month}, ${P.year}`, L + dw + 24, wy + 100, `700 34px ${B}`, INK); T(P.weekday, L + dw + 24, wy + 144, `500 30px ${B}`, '#5b647d');
   const dvx = x + 580; dash(dvx, wy + 20, dvx, wy + 156, '#cfc5ac', 3, [10, 10]);
   T('Giờ khởi hành', dvx + 36, wy + 44, `500 26px ${B}`, GREY); T($('pTime').textContent, dvx + 36, wy + 146, `800 96px ${F}`, INK);
-  /* chi tiết */
-  const cell = (lab, val, cx, cy) => { T(lab, cx, cy, `500 26px ${B}`, GREY); T(val, cx, cy + 48, `700 38px ${B}`, INK); };
-  cell('Cổng ra', CONFIG.venue, L, y + 1030); cell('Ghế', $('pSeat').textContent, x + 480, y + 1030); cell('Hạng', CONFIG.to, x + 700, y + 1030);
+  /* chi tiết: cổng ra, ghế, hạng khách mời */
+  const gy = y + 1136;
+  const cell = (lab, val, cx, maxW) => { T(lab, cx, gy, `500 26px ${B}`, GREY); const fs = fitFont(val, 700, 38, B, maxW); T(val, cx, gy + 48, `700 ${fs}px ${B}`, INK); };
+  cell('Cổng ra', CONFIG.venue, L, 330); cell('Ghế', $('pSeat').textContent, x + 430, 200); cell('Hạng', $('pClass').textContent, x + 660, R - (x + 660));
   /* cuống vé */
-  const pf = y + 1150;
+  const pf = y + 1262;
   g.fillStyle = SKYC; [x, x + w].forEach(cx => { g.beginPath(); g.arc(cx, pf, 30, 0, Math.PI * 2); g.fill(); });
   dash(x + 50, pf, x + w - 50, pf, '#b9ae94', 4, [14, 12]);
-  g.fillStyle = INK; for (let bx2 = L, i = 0; bx2 < R && i < 80; i++) { const bw2 = [3, 6, 3, 9, 4][i % 5]; g.fillRect(bx2, y + 1184, bw2, 44); bx2 += bw2 + [5, 4, 7, 3, 6][i % 5]; }
-  T($('tkCode').textContent, L, y + 1258, `600 24px ${B}`, '#6b7390');
+  g.fillStyle = INK; for (let bx2 = L, i = 0; bx2 < R && i < 80; i++) { const bw2 = [3, 6, 3, 9, 4][i % 5]; g.fillRect(bx2, y + 1296, bw2, 44); bx2 += bw2 + [5, 4, 7, 3, 6][i % 5]; }
+  T($('tkCode').textContent, L, y + 1376, `600 24px ${B}`, '#6b7390');
   /* con dấu nằm phía trên giờ khởi hành */
-  g.save(); g.translate(x + w - 250, y + 776); g.rotate(-.17); g.strokeStyle = RED; g.fillStyle = RED; g.globalAlpha = .88; g.lineWidth = 6; rr(g, -130, -42, 260, 84, 12); g.stroke();
+  g.save(); g.translate(x + w - 250, y + 886); g.rotate(-.17); g.strokeStyle = RED; g.fillStyle = RED; g.globalAlpha = .88; g.lineWidth = 6; rr(g, -130, -42, 260, 84, 12); g.stroke();
   g.textAlign = 'center'; g.font = `800 38px ${F}`; g.fillText('Đã lên tàu', 0, 6); g.font = `600 20px ${B}`; g.fillText(today, 0, 32); g.restore();
   T('Hẹn gặp bạn ngày ' + $('pDate').textContent, W / 2, H - 80, `600 36px ${B}`, '#f6f0e0', 'center');
   return c;
