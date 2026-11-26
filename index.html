@@ -400,8 +400,11 @@ button.chip{cursor:pointer}
 #passport{padding-bottom:160px}   /* chừa chỗ cho đường băng ở cuối trang */
 
 /* ===== THÔNG BÁO CỦA CƠ TRƯỞNG (loa) ===== */
-.ann{position:fixed;top:64px;left:50%;transform:translate(-50%,-12px);background:var(--paper);color:var(--ink);padding:11px 16px;border-radius:14px;font-weight:600;font-size:14px;line-height:1.4;
-  max-width:min(92vw,420px);text-align:center;opacity:0;pointer-events:none;transition:opacity .35s,transform .35s;z-index:340;box-shadow:0 10px 24px rgba(3,24,80,.45)}
+.ann{position:fixed;top:56px;left:50%;transform:translate(-50%,-10px);padding:6px 12px;border-radius:14px;font-weight:600;font-size:12px;line-height:1.35;
+  max-width:min(86vw,320px);text-align:center;color:var(--paper);opacity:0;pointer-events:none;transition:opacity .35s,transform .35s;z-index:340;
+  background:linear-gradient(140deg,rgba(255,255,255,.34),rgba(255,255,255,.1)),rgba(9,45,120,.5);border:1px solid rgba(255,255,255,.42);
+  -webkit-backdrop-filter:blur(10px) saturate(1.4);backdrop-filter:blur(10px) saturate(1.4);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 16px rgba(2,24,78,.35)}
 .ann.show{opacity:1;transform:translate(-50%,0)}
 
 /* ===== THỬ THÁCH BẮT MŨ ===== */
@@ -421,6 +424,33 @@ body.gaming{overflow:hidden}
 .g-panel h3{font-family:var(--disp);font-weight:800;font-size:38px;line-height:1.1}
 .g-panel p{color:var(--mut);font-size:16px;max-width:28ch;margin:0 auto}
 .g-btns{display:flex;gap:10px;justify-content:center}
+
+/* ===== KÍNH LỎNG (liquid glass) cho các hộp chữ =====
+   Nền trong suốt chuyển sắc + viền sáng + vệt phản chiếu góc trên. KHÔNG dùng blur nặng cho các hộp cuộn theo trang
+   (ảnh nền đã mờ sẵn nên trông vẫn như kính, mà không tốn GPU). Chỉ hộp thông báo và toast (nhỏ, tồn tại ngắn) có blur thật. */
+:root{
+  --glass:radial-gradient(130% 100% at 6% -12%,rgba(255,255,255,.34),transparent 52%),linear-gradient(140deg,rgba(255,255,255,.22),rgba(255,255,255,.07) 48%,rgba(255,255,255,.16));
+  --glass-edge:inset 0 1px 0 rgba(255,255,255,.6),inset 1px 0 0 rgba(255,255,255,.26),inset 0 -1px 0 rgba(255,255,255,.14),0 10px 26px rgba(2,24,78,.3);
+}
+.no-glass-boxes{--glass:linear-gradient(rgba(10,52,134,.86),rgba(10,52,134,.86));--glass-edge:none}   /* tắt kính: hộp đặc màu xanh */
+.dep,.game-row,.slot,.venue,.route li,.ci-done,.stepper,.ci-choice button:not([aria-pressed=true]),.cabin,.win-quote{
+  background:var(--glass);border:1px solid rgba(255,255,255,.4);box-shadow:var(--glass-edge)}
+.dep{border-radius:20px;background:var(--glass),rgba(10,52,134,.4)}
+.cabin{background:var(--glass),rgba(10,52,134,.45)}
+.game-row{border-radius:18px}
+.slot{border-radius:16px}
+.slot.got{background:var(--glass),rgba(255,255,255,.08);border-color:rgba(255,255,255,.5)}
+.venue{padding:18px;border-radius:20px}
+.route li{padding:12px 16px;margin-bottom:14px;border-radius:16px}
+.route li:last-child{padding-bottom:12px;margin-bottom:0}
+.route li::before{top:16px}
+.ci-done{padding:12px 16px;border-radius:16px}
+.win-quote{padding:16px 18px;border-radius:20px;max-width:28ch}
+.chip{background:var(--glass),rgba(9,45,120,.86);border:1px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 4px 10px rgba(2,24,78,.3)}   /* chip cố định nên giữ khá đặc để chữ phía sau không lộ */
+#toast{background:rgba(246,240,224,.8);border:1px solid rgba(255,255,255,.7);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 8px 20px rgba(2,24,78,.3)}
+.calm .ann,.calm #toast{-webkit-backdrop-filter:none;backdrop-filter:none}
+.calm .ann{background:rgba(9,45,120,.92)}
+.calm #toast{background:var(--paper)}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
@@ -732,6 +762,7 @@ const EFFECTS = {
   windowView:   true,
   skyByHour:    true,
   sfx:          true,
+  glassBoxes:   true,   // Hộp chữ dạng kính lỏng trong suốt (false = hộp xanh đặc)
   announce:     true,   // Loa sân bay đọc thông báo tiếng Việt khi lên tàu / hạ cánh (cần máy có giọng đọc tiếng Việt; luôn có chú thích chữ)
   landing:      true,   // Hạ cánh: đường băng sáng dần và con dấu "Hạ cánh an toàn" khi cuộn tới cuối trang
   minigame:     true,   // Thử thách bắt mũ cử nhân trong hộ chiếu
@@ -950,7 +981,7 @@ function speak(text) {
 function announce(text) {
   if (!EFFECTS.announce || !annOn || !text) return;
   const b = $('ann'); b.textContent = text; b.hidden = false; requestAnimationFrame(() => b.classList.add('show'));
-  clearTimeout(annT); annT = setTimeout(() => { b.classList.remove('show'); setTimeout(() => { b.hidden = true; }, 400); }, 6500);
+  clearTimeout(annT); annT = setTimeout(() => { b.classList.remove('show'); setTimeout(() => { b.hidden = true; }, 400); }, 5200);
   if (!hasSpeech) return;
   if (speechSynthesis.getVoices().length) speak(text);
   else { const f = () => { speechSynthesis.removeEventListener('voiceschanged', f); speak(text); }; speechSynthesis.addEventListener('voiceschanged', f); setTimeout(() => speechSynthesis.removeEventListener('voiceschanged', f), 1500); }
@@ -1211,7 +1242,7 @@ function updateGlide() {
   const p = Math.min(1, Math.max(0, (innerHeight * .62 - r.top) / r.height));
   const y = p * (route.offsetHeight - 20);
   if (EFFECTS.planeGlide) glider.style.transform = `translate3d(0,${y}px,0) rotate(180deg)`;
-  [...route.children].forEach(li => li.classList.toggle('past', li.offsetTop + 8 <= y + 12));
+  [...route.children].forEach(li => li.classList.toggle('past', li.offsetTop + 16 <= y + 12));
   if (p > .96) collect('route');
 }
 function updateWindow() {
